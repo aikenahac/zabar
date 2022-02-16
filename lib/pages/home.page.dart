@@ -6,6 +6,21 @@ import 'package:zabar/utils/location.helper.dart';
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
+  _onMapCreated(MapboxMapController controller) async {
+    final location = await acquireCurrentLocation();
+    controller.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(
+            location.latitude,
+            location.longitude,
+          ),
+          zoom: 15,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,20 +39,7 @@ class HomePage extends StatelessWidget {
                       45.45,
                     ),
                   ),
-                  onMapCreated: (MapboxMapController controller) async {
-                    final location = await acquireCurrentLocation();
-                    controller.animateCamera(
-                      CameraUpdate.newCameraPosition(
-                        CameraPosition(
-                          target: LatLng(
-                            location.latitude,
-                            location.longitude,
-                          ),
-                          zoom: 15,
-                        ),
-                      ),
-                    );
-                  },
+                  onMapCreated: _onMapCreated,
                 );
               } else {
                 return const Center(
