@@ -1,0 +1,29 @@
+name: zabar
+description: Mobile app that implements APIs for traffic in the city of Ljubljana, Slovenia.
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.17.0-104.0.dev <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  mapbox_gl: ^0.15.0
+  http: ^0.13.4
+  location: ^4.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^1.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/config.json
