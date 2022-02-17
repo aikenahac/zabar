@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:zabar/api/bicikelj_api/api.bicikelj.dart';
 import 'package:zabar/utils/config.helper.dart';
 import 'package:zabar/utils/location.helper.dart';
 
@@ -53,7 +54,9 @@ class HomePage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: FloatingActionButton(
-                onPressed: () {},
+                onPressed: () async {
+                  final List terminals = await getAllTerminals();
+                },
               ),
             ),
           ),
