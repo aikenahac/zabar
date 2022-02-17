@@ -48,6 +48,15 @@ class HomePage extends StatelessWidget {
               }
             },
           ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FloatingActionButton(
+                onPressed: () {},
+              ),
+            ),
+          ),
         ],
       ),
     );
