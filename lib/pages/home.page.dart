@@ -6,6 +6,7 @@ import 'package:zabar/api/bicikelj_api/api.bicikelj.dart';
 import 'package:zabar/models/bicikelj/bicikelj.model.dart';
 import 'package:zabar/utils/config.helper.dart';
 import 'package:zabar/utils/location.helper.dart';
+import 'package:zabar/utils/marker_utils/bicikelj_markers.util.dart';
 import 'package:zabar/widgets/marker.widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,9 +21,13 @@ class _HomePageState extends State<HomePage> {
 
   late MapboxMapController _controller;
 
-  List<Marker> _markers = [];
+  final List<Marker> _markers = [];
+  final List<MarkerState> _markerStates = [];
 
-  List<MarkerState> _markerStates = [];
+  @override
+  void initState() {
+    super.initState();
+  }
 
   _onMapCreated(MapboxMapController controller) async {
     _controller = controller;
@@ -49,24 +54,9 @@ class _HomePageState extends State<HomePage> {
     _markerStates.add(markerState);
   }
 
-  void _addMarker(Point<double> point, LatLng coordinates) {
+  void _addMarker(Point<double> point, LatLng coordinates, Widget body) {
     setState(() {
-      _markers.add(Marker(_rnd.nextInt(100000).toString(), coordinates, point, _addMarkerStates));
-    });
-  }
-
-  void _setBicikeljMarkers(List terminals) {
-    var param = <LatLng>[];
-
-    for (BicikeLJ terminal in terminals) {
-      param.add(LatLng(double.parse(terminal.lat), double.parse(terminal.lng)));
-    }
-
-    _controller.toScreenLocationBatch(param).then((value) {
-      for (int i = 0; i < terminals.length; i++) {
-        final point = Point<double>(value[i].x as double, value[i].y as double);
-        _addMarker(point, param[i]);
-      }
+      _markers.add(Marker(_rnd.nextInt(100000).toString(), coordinates, point, _addMarkerStates, body));
     });
   }
 
@@ -131,12 +121,18 @@ class _HomePageState extends State<HomePage> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FloatingActionButton(
-                onPressed: () async {
-                  final List<BicikeLJ> terminals = await getAllTerminals();
-                  _setBicikeljMarkers(terminals);
-                },
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FloatingActionButton(
+                    child: const Icon(Icons.pedal_bike),
+                    onPressed: () async {
+                      final List<BicikeLJ> terminals = await getAllTerminals();
+                      createBicikeljMarkers(terminals, _controller, _addMarker);
+                    },
+                  ),
+                ],
               ),
             ),
           ),
