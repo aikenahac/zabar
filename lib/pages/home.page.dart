@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   _onMapCreated(MapboxMapController controller) async {
     _controller = controller;
     final location = await acquireCurrentLocation();
-    controller.animateCamera(
+    _controller.animateCamera(
       CameraUpdate.newCameraPosition(
         CameraPosition(
           target: LatLng(
@@ -38,8 +38,8 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-    controller.addListener(() {
-      if (controller.isCameraMoving) {
+    _controller.addListener(() {
+      if (_controller.onCameraIdle != null) {
         _updateMarkerPosition();
       }
     });
@@ -61,8 +61,6 @@ class _HomePageState extends State<HomePage> {
     for (BicikeLJ terminal in terminals) {
       param.add(LatLng(double.parse(terminal.lat), double.parse(terminal.lng)));
     }
-
-    print(param);
 
     _controller.toScreenLocationBatch(param).then((value) {
       for (int i = 0; i < terminals.length; i++) {
@@ -93,6 +91,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           FutureBuilder(
@@ -105,6 +104,7 @@ class _HomePageState extends State<HomePage> {
                       accessToken: snapshot.data!['mapbox_token'],
                       myLocationEnabled: true,
                       onCameraIdle: _onCameraIdleCallback,
+                      trackCameraPosition: true,
                       initialCameraPosition: const CameraPosition(
                         target: LatLng(
                           45.45,
@@ -114,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                       onMapCreated: _onMapCreated,
                     ),
                     IgnorePointer(
-                      ignoring: true,
+                      ignoring: false,
                       child: Stack(
                         children: _markers,
                       ),
